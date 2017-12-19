@@ -188,7 +188,7 @@ int main (int argc, char **argv)
         }else{
           if(*std::cbegin(*it) == '#'){
             result << '\n' << *it << '\n';
-          }else if(it->length() > desth && define_shorten){
+          }else if(it->length() > desth && *it->begin() != '"' && *it->end() != '"' && define_shorten){
             if(!defmap.count(*it)){
               std::string key;
               do{
