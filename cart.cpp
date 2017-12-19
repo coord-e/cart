@@ -98,6 +98,7 @@ int main (int argc, char **argv)
   args::ValueFlag<int> arg_rows(argparser, "rows", "Number of rows (=5)", {'r', "rows"});
   args::ValueFlag<int> arg_cols(argparser, "cols", "Number of cols (=5)", {'c', "cols"});
   args::ValueFlag<double> arg_threshold(argparser, "threshold", "threshold (=150)", {"th"});
+  args::ValueFlag<int> arg_desth(argparser, "define threshold", "Minimum length of token (=5)", {'d', "desth"});
   args::Flag arg_verbose(argparser, "verbose", "Print verbose output and show images in process", {'v', "verbose"});
   try{
       argparser.ParseCLI(argc, argv);
@@ -125,6 +126,7 @@ int main (int argc, char **argv)
   auto const cols = arg_cols ? args::get(arg_cols) : 5;
   auto const path = args::get(arg_path);
   auto const th = arg_threshold ? args::get(arg_threshold) : 150;
+  auto const desth = arg_desth ? args::get(arg_desth) : 5;
   bool const verbose = arg_verbose;
 
   auto raw_image = cv::imread(path, 0);
@@ -168,7 +170,9 @@ int main (int argc, char **argv)
     return -1;
   }
 
+  std::map<std::string, std::string> defmap{};
   auto it = std::cbegin(tokens);
+  int itr = 0;
   std::stringstream result;
   for(int y = 0; y < src_image.rows; y+=rows){
     for(int x = 0; x < src_image.cols; x+=cols){
@@ -182,6 +186,30 @@ int main (int argc, char **argv)
         }else{
           if(*std::cbegin(*it) == '#'){
             result << '\n' << *it << '\n';
+          }else if(it->length() > desth){
+            if(!defmap.count(*it)){
+              std::string key;
+              do{
+                int p = itr++;
+                if(!p)
+                  key = "a";
+                else{
+                  int i;
+                  char t[64] = { };
+                  for(i = 62; p; --i) {
+                    t[i] = p % 26 + 'a';
+                    p /= 26;
+                  }
+                  key = std::string(t + i + 1);
+                }
+                if(*(std::cend(*it) - 1) == ' ')
+                  key += " ";
+              }while(std::find(tokens.begin(), tokens.end(), key) != tokens.end());
+              result << key;
+              defmap.insert({*it, key});
+            }else{
+              result << defmap[*it];
+            }
           }else{
             result << *it;
             x += it->length() * cols;
@@ -198,6 +226,10 @@ int main (int argc, char **argv)
     std::copy(it,
                std::cend(tokens),
                std::ostream_iterator<std::string>(result));
+  }
+
+  for(auto const& p : defmap){
+    std::cout << "#define " << p.second << " " << p.first << std::endl;
   }
 
   std::copy(std::istreambuf_iterator<char>(result),
