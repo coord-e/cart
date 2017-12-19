@@ -98,7 +98,8 @@ int main (int argc, char **argv)
   args::ValueFlag<int> arg_rows(argparser, "rows", "Number of rows (=5)", {'r', "rows"});
   args::ValueFlag<int> arg_cols(argparser, "cols", "Number of cols (=5)", {'c', "cols"});
   args::ValueFlag<double> arg_threshold(argparser, "threshold", "threshold (=150)", {"th"});
-  args::ValueFlag<int> arg_desth(argparser, "define threshold", "Minimum length of token (=5)", {'d', "desth"});
+  args::Flag arg_define_shorten(argparser, "Shorten using #define", "Use #define to shorten tokens", {'d'});
+  args::ValueFlag<int> arg_desth(argparser, "define threshold", "Minimum length of token (=5)", {"defth"});
   args::Flag arg_verbose(argparser, "verbose", "Print verbose output and show images in process", {'v', "verbose"});
   try{
       argparser.ParseCLI(argc, argv);
@@ -127,6 +128,7 @@ int main (int argc, char **argv)
   auto const path = args::get(arg_path);
   auto const th = arg_threshold ? args::get(arg_threshold) : 150;
   auto const desth = arg_desth ? args::get(arg_desth) : 5;
+  bool const define_shorten = arg_define_shorten;
   bool const verbose = arg_verbose;
 
   auto raw_image = cv::imread(path, 0);
@@ -186,7 +188,7 @@ int main (int argc, char **argv)
         }else{
           if(*std::cbegin(*it) == '#'){
             result << '\n' << *it << '\n';
-          }else if(it->length() > desth){
+          }else if(it->length() > desth && define_shorten){
             if(!defmap.count(*it)){
               std::string key;
               do{
