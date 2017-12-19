@@ -54,7 +54,7 @@ std::vector<std::string> tokenize(const std::string& filepath) {
         macro_holder.second = line;
       }else if (*std::cbegin(thes) == '#' && macro_holder.second != -1 && macro_holder.second != line) { //end & start of macros
         //std::cout << "SEOM: " << thes << std::endl;
-        dest.push_back(macro_holder.first+"\n");
+        dest.push_back(macro_holder.first+'\n');
         macro_holder.first = "#";
         macro_holder.second = line;
       }else{
