@@ -172,8 +172,11 @@ int main (int argc, char **argv)
     return -1;
   }
 
+  std::vector<std::string> prep{};
   std::map<std::string, std::string> defmap{};
-  auto it = std::cbegin(tokens);
+  auto it = std::begin(tokens);
+  auto last = std::remove_if(tokens.begin(), tokens.end(),
+    [&prep](auto&& x) { bool c = *std::cbegin(x) == '#'; if(c) prep.push_back(x); return c; });
   int itr = 0;
   std::stringstream result;
   for(int y = 0; y < src_image.rows; y+=rows){
@@ -182,7 +185,7 @@ int main (int argc, char **argv)
 
       int b = std::count_if(part_image.begin<unsigned char>(), part_image.end<unsigned char>(), [](auto x) -> bool { return x; });
       if(b > part_image.total() / 2){
-        if(it == std::cend(tokens)){
+        if(it == last){
           result << "//";
           x += cols * 2;
         }else{
@@ -224,11 +227,17 @@ int main (int argc, char **argv)
     result << std::endl;
   }
 
-  if(it != std::cend(tokens)){
+  if(it != last){
     std::copy(it,
-               std::cend(tokens),
+               last,
                std::ostream_iterator<std::string>(result));
   }
+
+  std::copy(prep.begin(),
+             prep.end(),
+             std::ostream_iterator<std::string>(std::cout));
+
+  std::cout << std::endl;
 
   for(auto const& p : defmap){
     std::cout << "#define " << p.second << " " << p.first << std::endl;
