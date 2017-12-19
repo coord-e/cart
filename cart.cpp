@@ -57,7 +57,7 @@ std::vector<std::string> tokenize(const std::string& filepath) {
         dest.push_back(macro_holder.first+"\n");
         macro_holder.first = "#";
         macro_holder.second = line;
-      }else if(*std::cbegin(thes) != '/' || (*(std::cbegin(thes)+1) != '/' && *(std::cbegin(thes)+1) != '*')){ // not comments
+      }else{
         if(macro_holder.second != -1){
           if(macro_holder.second == line){ // in macros
             //std::cout << "IOM: " << thes << std::endl;
@@ -71,11 +71,13 @@ std::vector<std::string> tokenize(const std::string& filepath) {
           }
         }
         auto const kind = clang_getTokenKind(token);
-        if(kind != CXToken_Punctuation)
-          dest.push_back(thes+" ");
-        else
-          dest.push_back(thes);
-      } // comments are skipped!
+        if(kind != CXToken_Comment){
+          if(kind != CXToken_Punctuation)
+            dest.push_back(thes+" ");
+          else
+            dest.push_back(thes);
+        }
+      }
       clang_disposeString(spelling);
     }
     clang_disposeTokens(unit, tokens, num_tokens);
