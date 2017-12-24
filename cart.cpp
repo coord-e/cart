@@ -101,6 +101,7 @@ int main (int argc, char **argv)
   args::Flag arg_define_shorten(argparser, "Shorten using #define", "Use #define to shorten tokens", {'d'});
   args::ValueFlag<int> arg_desth(argparser, "define threshold", "Minimum length of token (=5)", {"defth"});
   args::Flag arg_verbose(argparser, "verbose", "Print verbose output and show images in process", {'v', "verbose"});
+  args::Flag arg_invert(argparser, "invert", "invert image", {'i', "invert"});
   try{
       argparser.ParseCLI(argc, argv);
   } catch (args::Help){
@@ -130,6 +131,7 @@ int main (int argc, char **argv)
   auto const desth = arg_desth ? args::get(arg_desth) : 5;
   bool const define_shorten = arg_define_shorten;
   bool const verbose = arg_verbose;
+  bool const invert = arg_invert;
 
   auto raw_image = cv::imread(path, 0);
   if(!raw_image.data){
@@ -144,6 +146,18 @@ int main (int argc, char **argv)
     std::cerr << "Failed to apply threshold." << std::endl;
     std::cerr << ex.what() << std::endl;
     return -1;
+  }
+
+  if(invert){
+      cv::Mat iv_image;
+      try{
+          cv::bitwise_not(th_image, iv_image);
+      }catch(cv::Exception& ex){
+          std::cerr << "Failed to invert image" << std::endl;
+          std::cerr << ex.what() << std::endl;
+          return -1;
+      }
+      th_image = iv_image;
   }
 
   int cn = std::floor(th_image.cols / cols) * cols;
