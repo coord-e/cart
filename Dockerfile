@@ -35,15 +35,14 @@ ENV CC /usr/bin/clang
 ENV CXX /usr/bin/clang++
 
 RUN mkdir -p /tmp && cd /tmp \
-    && wget https://github.com/opencv/opencv/archive/3.3.0.zip \
-    && unzip 3.3.0.zip \
+    && wget -q https://github.com/opencv/opencv/archive/3.3.0.zip \
+    && unzip -q 3.3.0.zip \
     && cd /tmp/opencv-3.3.0 \
     && mkdir build \
     && cd build \
     && cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_FFMPEG=NO -D WITH_PYTHON=NO \
          -D WITH_IPP=NO -D WITH_OPENEXR=NO .. \
-    && make VERBOSE=1 \
-    && make \
+    && make -j"$(nproc)" \
     && make install
 
 COPY . /cart-build
