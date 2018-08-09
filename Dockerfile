@@ -35,6 +35,7 @@ RUN echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/ap
       # Libraries for working with WebP images (development files)
       libwebp-dev \
       linux-headers \
+    # Build OpenCV 3.3.0
     && mkdir -p /tmp && cd /tmp \
     && wget -q https://github.com/opencv/opencv/archive/3.3.0.zip \
     && unzip -q 3.3.0.zip \
@@ -45,10 +46,12 @@ RUN echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/ap
          -D WITH_IPP=NO -D WITH_OPENEXR=NO .. \
     && make -j"$(nproc)" \
     && make install \
+    # Build cart
     && cd /cart-build && mkdir build && cd build \
     && cmake .. -D CMAKE_INSTALL_PREFIX=/usr/local \
     && make -j"$(nproc)" \
     && make install \
+    # Cleanup
     && rm -rf /cart-build \
     && rm -rf /tmp/* \
     && apk del --purge .build-deps \
