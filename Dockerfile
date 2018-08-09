@@ -1,5 +1,10 @@
 FROM alpine:edge
 
+ENV CC /usr/bin/clang
+ENV CXX /usr/bin/clang++
+
+COPY . /cart-build
+
 RUN echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
     && apk update && apk upgrade \
     && apk add --update --no-cache \
@@ -29,12 +34,8 @@ RUN echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/ap
       tiff-dev \
       # Libraries for working with WebP images (development files)
       libwebp-dev \
-      linux-headers
-
-ENV CC /usr/bin/clang
-ENV CXX /usr/bin/clang++
-
-RUN mkdir -p /tmp && cd /tmp \
+      linux-headers \
+    && mkdir -p /tmp && cd /tmp \
     && wget -q https://github.com/opencv/opencv/archive/3.3.0.zip \
     && unzip -q 3.3.0.zip \
     && cd /tmp/opencv-3.3.0 \
@@ -43,15 +44,12 @@ RUN mkdir -p /tmp && cd /tmp \
     && cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_FFMPEG=NO -D WITH_PYTHON=NO \
          -D WITH_IPP=NO -D WITH_OPENEXR=NO .. \
     && make -j"$(nproc)" \
-    && make install
-
-COPY . /cart-build
-RUN cd /cart-build && mkdir build && cd build \
+    && make install \
+    && cd /cart-build && mkdir build && cd build \
     && cmake .. -D CMAKE_INSTALL_PREFIX=/usr/local \
     && make -j"$(nproc)" \
-    && make install
-
-RUN rm -rf /cart-build \
+    && make install \
+    && rm -rf /cart-build \
     && rm -rf /tmp/* \
     && apk del --purge .build-deps \
     && rm -rf /var/cache/apk/*
