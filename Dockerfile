@@ -1,10 +1,8 @@
 FROM alpine:edge
 
-RUN echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories
-
-RUN apk update && apk upgrade
-
-RUN apk add --update --no-cache \
+RUN echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/apk/repositories \
+    && apk update && apk upgrade \
+    && apk add --update --no-cache \
       libtbb@testing \
       libtbb-dev@testing \
       clang-dev \
@@ -13,8 +11,8 @@ RUN apk add --update --no-cache \
       libpng \
       jasper \
       tiff \
-      libwebp
-RUN apk add --update --no-cache \
+      libwebp \
+    && apk add --update --no-cache \
       --virtual .build-deps \
       build-base \
       openblas-dev \
@@ -33,14 +31,13 @@ RUN apk add --update --no-cache \
       libwebp-dev \
       linux-headers
 
-
 ENV CC /usr/bin/clang
 ENV CXX /usr/bin/clang++
 
 RUN mkdir -p /tmp && cd /tmp && \
     wget https://github.com/opencv/opencv/archive/3.3.0.zip && \
-    unzip 3.3.0.zip
-RUN cd /tmp/opencv-3.3.0 && \
+    unzip 3.3.0.zip && \
+    cd /tmp/opencv-3.3.0 && \
     mkdir build && \
     cd build && \
     cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_FFMPEG=NO -D WITH_PYTHON=NO \
