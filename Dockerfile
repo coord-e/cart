@@ -59,3 +59,5 @@ RUN rm -rf /cart-build \
     && rm -rf /tmp/* \
     && apk del --purge .build-deps \
     && rm -rf /var/cache/apk/*
+
+ENTRYPOINT ["/usr/local/bin/cart"]
