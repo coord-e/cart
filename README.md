@@ -1,6 +1,11 @@
 # cart
 
-[![license](https://img.shields.io/github/license/coord-e/cart.svg?style=flat-square)]()[![cpp](https://img.shields.io/badge/C%2B%2B-14-brightgreen.svg?style=flat-square)]()
+[![Docker Automated build](https://img.shields.io/docker/automated/coorde/cart.svg?style=flat-square)](https://hub.docker.com/r/coorde/cart)
+[![Docker Build Status](https://img.shields.io/docker/build/coorde/cart.svg?style=flat-square)](https://hub.docker.com/r/coorde/cart)
+[![MicroBadger Size](https://img.shields.io/microbadger/image-size/coorde/cart.svg?style=flat-square)](https://microbadger.com/images/coorde/cart)
+[![MicroBadger Layers](https://img.shields.io/microbadger/layers/coorde/cart.svg?style=flat-square)](https://microbadger.com/images/coorde/cart)
+[![license](https://img.shields.io/github/license/coord-e/cart.svg?style=flat-square)]](LICENSE)
+![cpp](https://img.shields.io/badge/C%2B%2B-14-brightgreen.svg?style=flat-square)]
 
 Convert c/c++ code into compilable ascii art
 
