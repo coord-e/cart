@@ -18,6 +18,7 @@ RUN echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/ap
       wget \
       cmake \
       clang-dev \
+    && ln -s /dev/null /dev/raw1394 \
     # Build cart
     && cd /cart-build && mkdir build && cd build \
     && cmake -D CMAKE_INSTALL_PREFIX=/usr/local .. \
