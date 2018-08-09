@@ -14,9 +14,8 @@
 // function 'tokenize' is based on tokenizer.cc (http://tlab.hatenablog.com/entry/2013/01/05/142823)
 // Copyright (c) 2013 Shinya
 // The MIT License (MIT) http://opensource.org/licenses/mit-license.php
-std::vector<std::string> tokenize(const std::string& filepath) {
-  std::vector<std::string> dest;
-
+template<typename OutputIterator>
+OutputIterator tokenize(OutputIterator first, const std::string& filepath) {
   auto const index = clang_createIndex(1, 0); // exclude_decls_from_pch:1, display_diagnostics:0
   clang_CXIndex_setGlobalOptions(index, CXGlobalOpt_None);
   const char* args[] = { "-Xclang", "-cc1" };
@@ -44,9 +43,9 @@ std::vector<std::string> tokenize(const std::string& filepath) {
         for(; it != end; it++){
           if(*it == '\\'){
             it++;
-            dest.push_back(std::string("\"\\") + *it + "\"");
+            *first++ = std::string("\"\\") + *it + "\"";
           }else
-            dest.push_back(std::string("\"") + *it + "\"");
+            *first++ = std::string("\"") + *it + "\"";
         }
       }else if (*std::cbegin(thes) == '#' && macro_holder.second == -1) { //start of macros
         //std::cout << "SOM: " << thes << std::endl;
@@ -54,7 +53,7 @@ std::vector<std::string> tokenize(const std::string& filepath) {
         macro_holder.second = line;
       }else if (*std::cbegin(thes) == '#' && macro_holder.second != -1 && macro_holder.second != line) { //end & start of macros
         //std::cout << "SEOM: " << thes << std::endl;
-        dest.push_back(macro_holder.first+'\n');
+        *first++ = macro_holder.first+'\n';
         macro_holder.first = "#";
         macro_holder.second = line;
       }else{
@@ -65,17 +64,14 @@ std::vector<std::string> tokenize(const std::string& filepath) {
             thes = "";
           }else{ // end of macros
             //std::cout << "EOM: " << macro_holder.first << std::endl;
-            dest.push_back(macro_holder.first);
+            *first++ = macro_holder.first;
             macro_holder.first = "";
             macro_holder.second = -1;
           }
         }
         auto const kind = clang_getTokenKind(token);
         if(kind != CXToken_Comment){
-          if(kind != CXToken_Punctuation)
-            dest.push_back(thes+" ");
-          else
-            dest.push_back(thes);
+          *first++ = kind != CXToken_Punctuation ? thes + " " : thes;
         }
       }
       clang_disposeString(spelling);
@@ -86,7 +82,7 @@ std::vector<std::string> tokenize(const std::string& filepath) {
     std::cerr << "Failed to tokenize: \"" << filepath << "\"" << std::endl;
   }
   clang_disposeIndex(index);
-  return dest;
+  return first;
 }
 
 int main (int argc, char **argv)
@@ -179,7 +175,8 @@ int main (int argc, char **argv)
    return -1;
   }
 
-  auto tokens = tokenize(args::get(arg_source));
+  std::vector<std::string> tokens{};
+  tokenize(std::back_inserter(tokens), args::get(arg_source));
 
   if(tokens.empty()){
     std::cerr << "Failed to tokenize." << std::endl;
