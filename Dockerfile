@@ -10,7 +10,6 @@ RUN apk add --update --no-cache \
       clang-dev \
       libjpeg \
       openblas \
-      libdc1394 \
       libpng \
       jasper \
       tiff \
@@ -22,7 +21,6 @@ RUN apk add --update --no-cache \
       unzip \
       wget \
       cmake \
-      libdc1394-dev \
       # accelerated baseline JPEG compression and decompression library
       libjpeg-turbo-dev \
       # Portable Network Graphics library
