@@ -8,6 +8,13 @@ RUN apk add --update --no-cache \
       libtbb@testing \
       libtbb-dev@testing \
       clang-dev \
+      libjpeg \
+      openblas \
+      libdc1394 \
+      libpng \
+      jasper \
+      tiff \
+      libwebp
 RUN apk add --update --no-cache \
       --virtual .build-deps \
       build-base \
@@ -17,7 +24,6 @@ RUN apk add --update --no-cache \
       cmake \
       libdc1394-dev \
       # accelerated baseline JPEG compression and decompression library
-      libjpeg \
       libjpeg-turbo-dev \
       # Portable Network Graphics library
       libpng-dev \
