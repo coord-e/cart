@@ -51,7 +51,7 @@ RUN cd /tmp/opencv-3.3.0 && \
 
 COPY . /cart-build
 RUN cd /cart-build && mkdir build && cd build \
-    && cmake .. \
+    && cmake .. -D CMAKE_INSTALL_PREFIX=/usr/local \
     && make -j"$(nproc)" \
     && make install
 
