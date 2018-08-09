@@ -6,7 +6,8 @@ RUN apk update && apk upgrade
 
 RUN apk add --update --no-cache \
       libtbb@testing \
-      libtbb-dev@testing
+      libtbb-dev@testing \
+      clang-dev \
 RUN apk add --update --no-cache \
       --virtual .build-deps \
       build-base \
@@ -26,7 +27,6 @@ RUN apk add --update --no-cache \
       tiff-dev \
       # Libraries for working with WebP images (development files)
       libwebp-dev \
-      clang-dev \
       linux-headers
 
 
