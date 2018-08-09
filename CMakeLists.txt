@@ -9,6 +9,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(OpenCV REQUIRED)
 
 include_directories(${OpenCV_INCLUDE_DIRS})
+include_directories(extsrc/args)
 
 option(FORMAT_BEFORE_BUILD
   "If the command clang-format is avilable, format source files before each build.\
