@@ -91,11 +91,11 @@ int main (int argc, char **argv)
   args::HelpFlag help(argparser, "help", "Print this help", {'h', "help"});
   args::Positional<std::string> arg_source(argparser, "source", "Path to c source file");
   args::Positional<std::string> arg_path(argparser, "image", "Path to image file");
-  args::ValueFlag<int> arg_rows(argparser, "rows", "Number of rows (=5)", {'r', "rows"});
-  args::ValueFlag<int> arg_cols(argparser, "cols", "Number of cols (=5)", {'c', "cols"});
-  args::ValueFlag<double> arg_threshold(argparser, "threshold", "threshold (=150)", {"th"});
-  args::Flag arg_define_shorten(argparser, "Shorten using #define", "Use #define to shorten tokens", {'d'});
-  args::ValueFlag<int> arg_desth(argparser, "define threshold", "Minimum length of token (=5)", {"defth"});
+  args::ValueFlag<int> arg_rows(argparser, "row size", "The size of one row (=5)", {'r', "row"});
+  args::ValueFlag<int> arg_cols(argparser, "col size", "The size of one col (=5)", {'c', "col"});
+  args::ValueFlag<double> arg_threshold(argparser, "threshold", "threshold (=150)", {'t', "threshold"});
+  args::Flag arg_define_shorten(argparser, "Shorten using #define", "Use #define to shorten tokens", {'d', "emit-define"});
+  args::ValueFlag<int> arg_desth(argparser, "define threshold", "Minimum length of token (=5)", {"emit-define-threshold"});
   args::Flag arg_verbose(argparser, "verbose", "Print verbose output and show images in process", {'v', "verbose"});
   args::Flag arg_invert(argparser, "invert", "invert image", {'i', "invert"});
   try{
