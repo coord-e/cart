@@ -4,7 +4,13 @@
 
 Convert c/c++ code into compilable ascii art
 
-## Getting started
+# Getting started
+
+## Docker
+
+`docker run -v $(pwd):/data coorde/cart /data/code.cpp /data/img.png > out.cpp'
+
+## Build from source
 
 ### Prerequirements
  - opencv
