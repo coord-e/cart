@@ -34,17 +34,17 @@ RUN echo '@testing http://dl-cdn.alpinelinux.org/alpine/edge/testing' >> /etc/ap
 ENV CC /usr/bin/clang
 ENV CXX /usr/bin/clang++
 
-RUN mkdir -p /tmp && cd /tmp && \
-    wget https://github.com/opencv/opencv/archive/3.3.0.zip && \
-    unzip 3.3.0.zip && \
-    cd /tmp/opencv-3.3.0 && \
-    mkdir build && \
-    cd build && \
-    cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_FFMPEG=NO -D WITH_PYTHON=NO \
-      -D WITH_IPP=NO -D WITH_OPENEXR=NO .. && \
-    make VERBOSE=1 && \
-    make && \
-    make install
+RUN mkdir -p /tmp && cd /tmp \
+    && wget https://github.com/opencv/opencv/archive/3.3.0.zip \
+    && unzip 3.3.0.zip \
+    && cd /tmp/opencv-3.3.0 \
+    && mkdir build \
+    && cd build \
+    && cmake -D CMAKE_BUILD_TYPE=RELEASE -D CMAKE_INSTALL_PREFIX=/usr/local -D WITH_FFMPEG=NO -D WITH_PYTHON=NO \
+         -D WITH_IPP=NO -D WITH_OPENEXR=NO .. \
+    && make VERBOSE=1 \
+    && make \
+    && make install
 
 COPY . /cart-build
 RUN cd /cart-build && mkdir build && cd build \
